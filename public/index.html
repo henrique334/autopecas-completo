@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoPeças Sucata — Peças Originais com Preço Justo</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow:wght@400;500;600;700;900&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --rust: #C0392B; --rust-light: #E74C3C;
+    --steel: #1A1A2E; --steel-light: #0F3460;
+    --chrome: #E8E8E8; --chrome-dim: #B0B0B0;
+    --yellow: #F39C12; --oil: #0D0D0D; --grease: #1C1C1C;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Barlow', sans-serif; background: var(--oil); color: var(--chrome); overflow-x: hidden; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,13,13,0.95); backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--rust);
+    padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { font-family: 'Black Ops One', cursive; font-size: 1.4rem; color: var(--rust-light); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+  .nav-logo span { color: var(--yellow); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--chrome-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--yellow); }
+  .nav-cta { background: var(--rust) !important; color: white !important; padding: 0.5rem 1.2rem; border-radius: 2px; }
+  .mobile-menu-btn { display: none; background: none; border: none; color: var(--chrome); font-size: 1.5rem; cursor: pointer; }
+
+  #hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; padding: 100px 2rem 3rem; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(192,57,43,0.12) 0%, transparent 70%), linear-gradient(160deg, #0D0D0D 0%, #1A1A2E 100%); }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(192,57,43,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(192,57,43,0.07) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent); }
+  .hero-content { position: relative; z-index: 1; max-width: 700px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(192,57,43,0.15); border: 1px solid rgba(192,57,43,0.4); color: var(--rust-light); font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.4rem 1rem; border-radius: 2px; margin-bottom: 1.5rem; }
+  .hero-badge::before { content: ''; width: 8px; height: 8px; background: var(--rust-light); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)} }
+  h1 { font-family: 'Black Ops One', cursive; font-size: clamp(3rem, 8vw, 6rem); line-height: 0.95; margin-bottom: 1.5rem; }
+  h1 .line-rust { color: var(--rust-light); display: block; }
+  h1 .line-chrome { color: var(--chrome); display: block; }
+  h1 .line-yellow { color: var(--yellow); display: block; }
+  .hero-desc { font-size: 1.15rem; color: var(--chrome-dim); line-height: 1.7; max-width: 520px; margin-bottom: 2.5rem; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .hero-stats { display: flex; gap: 2.5rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); }
+  .stat-num { font-family: 'Black Ops One', cursive; font-size: 2.5rem; color: var(--yellow); line-height: 1; }
+  .stat-label { font-size: 0.75rem; color: var(--chrome-dim); letter-spacing: 1px; text-transform: uppercase; margin-top: 0.3rem; }
+  .divider { width: 1px; background: rgba(255,255,255,0.1); align-self: stretch; }
+
+  .btn-primary { background: var(--rust); color: white; padding: 0.9rem 2rem; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; clip-path: polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px)); transition: background 0.2s,transform 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .btn-primary:hover { background: var(--rust-light); transform: translateY(-2px); }
+  .btn-secondary { background: transparent; color: var(--chrome); padding: 0.9rem 2rem; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; clip-path: polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px)); transition: border-color 0.2s,color 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .btn-secondary:hover { border-color: var(--yellow); color: var(--yellow); }
+
+  .ticker-wrap { background: var(--rust); overflow: hidden; padding: 0.6rem 0; white-space: nowrap; margin-top: 64px; }
+  .ticker-content { display: inline-block; animation: ticker 30s linear infinite; }
+  .ticker-content span { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: white; margin-right: 4rem; }
+  .ticker-content span::before { content: '⚙'; margin-right: 0.5rem; opacity: 0.7; }
+  @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  .guarantee-strip { display: flex; justify-content: center; gap: 3rem; padding: 2.5rem; background: rgba(243,156,18,0.06); border-top: 1px solid rgba(243,156,18,0.15); border-bottom: 1px solid rgba(243,156,18,0.15); flex-wrap: wrap; }
+  .guarantee-item { display: flex; align-items: center; gap: 0.8rem; }
+  .gicon { font-size: 1.5rem; color: var(--yellow); }
+  .gtext { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
+
+  .search-section { background: var(--rust); padding: 3rem 2rem; }
+  .search-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .search-inner h2 { font-family: 'Black Ops One', cursive; font-size: 2rem; margin-bottom: 0.5rem; }
+  .search-inner p { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; }
+  .search-bar { display: flex; max-width: 700px; margin: 0 auto; }
+  .search-bar input { flex: 1; background: rgba(0,0,0,0.3); border: none; padding: 1rem 1.5rem; font-size: 1rem; color: white; font-family: 'Barlow', sans-serif; outline: none; }
+  .search-bar input::placeholder { color: rgba(255,255,255,0.5); }
+  .search-bar button { background: var(--oil); color: var(--yellow); border: none; padding: 1rem 2rem; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+  .search-bar button:hover { background: #222; }
+
+  section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .section-full { max-width: 100%; padding: 5rem 0; }
+  .section-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+  .section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--rust-light); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.8rem; }
+  .section-label::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--rust); }
+  h2 { font-family: 'Black Ops One', cursive; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1; margin-bottom: 1.5rem; }
+
+  #categorias { background: linear-gradient(to bottom, var(--oil), var(--grease)); }
+  .categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-top: 3rem; }
+  .cat-card { background: var(--grease); border: 1px solid rgba(255,255,255,0.06); padding: 1.8rem 1.2rem; text-align: center; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+  .cat-card::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--rust); transform: scaleX(0); transition: transform 0.3s; transform-origin: left; }
+  .cat-card:hover::before { transform: scaleX(1); }
+  .cat-card:hover { border-color: rgba(192,57,43,0.3); transform: translateY(-4px); background: rgba(192,57,43,0.06); }
+  .cat-icon { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
+  .cat-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .cat-count { font-size: 0.75rem; color: var(--chrome-dim); margin-top: 0.3rem; }
+
+  .parts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .part-card { background: var(--grease); border: 1px solid rgba(255,255,255,0.06); overflow: hidden; transition: transform 0.25s, border-color 0.25s; }
+  .part-card:hover { transform: translateY(-6px); border-color: rgba(192,57,43,0.4); }
+  .part-img { width: 100%; height: 180px; background: linear-gradient(135deg, #1A1A2E, #0F3460); display: flex; align-items: center; justify-content: center; font-size: 4.5rem; position: relative; }
+  .part-img img { width: 100%; height: 100%; object-fit: cover; }
+  .part-condition { position: absolute; top: 0.8rem; left: 0.8rem; background: var(--rust); color: white; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 0.3rem 0.7rem; z-index: 1; }
+  .part-body { padding: 1.2rem; }
+  .part-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--chrome); margin-bottom: 0.3rem; }
+  .part-car { font-size: 0.8rem; color: var(--chrome-dim); margin-bottom: 0.8rem; }
+  .part-price { font-family: 'Black Ops One', cursive; font-size: 1.6rem; color: var(--yellow); }
+  .part-price small { font-family: 'Barlow', sans-serif; font-size: 0.8rem; color: var(--chrome-dim); font-weight: 400; }
+  .part-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06); }
+  .part-btn { background: var(--rust); color: white; padding: 0.6rem 1.2rem; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s; }
+  .part-btn:hover { background: var(--rust-light); }
+  .part-whatsapp { background: #25D366; color: white; padding: 0.6rem 1.2rem; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .part-whatsapp:hover { background: #1ebe5d; }
+  .loading-grid { display: flex; justify-content: center; align-items: center; height: 200px; color: var(--chrome-dim); font-size: 1.1rem; }
+
+  #vantagens { background: var(--grease); }
+  .benefits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .benefit-card { border-left: 3px solid var(--rust); padding: 1.5rem 1.5rem 1.5rem 2rem; background: rgba(255,255,255,0.02); transition: background 0.2s; }
+  .benefit-card:hover { background: rgba(192,57,43,0.05); }
+  .benefit-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+  .benefit-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+  .benefit-desc { font-size: 0.9rem; color: var(--chrome-dim); line-height: 1.6; }
+
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .testimonial-card { background: var(--grease); border: 1px solid rgba(255,255,255,0.06); padding: 1.8rem; position: relative; }
+  .testimonial-card::before { content: '"'; font-family: Georgia,serif; font-size: 5rem; color: var(--rust); opacity: 0.3; position: absolute; top: -1rem; left: 1rem; line-height: 1; }
+  .testimonial-text { font-size: 0.95rem; color: var(--chrome-dim); line-height: 1.7; margin-bottom: 1.2rem; position: relative; z-index: 1; }
+  .testimonial-author { display: flex; align-items: center; gap: 0.8rem; }
+  .author-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--rust); display: flex; align-items: center; justify-content: center; font-family: 'Black Ops One', cursive; color: white; flex-shrink: 0; }
+  .author-name { font-weight: 700; font-size: 0.9rem; }
+  .author-city { font-size: 0.8rem; color: var(--chrome-dim); }
+  .stars { color: var(--yellow); font-size: 0.85rem; margin-bottom: 0.8rem; }
+
+  #contato { background: var(--steel); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; }
+  .contact-info-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start; }
+  .contact-icon { width: 44px; height: 44px; background: var(--rust); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; clip-path: polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px)); }
+  .contact-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; color: var(--chrome-dim); margin-bottom: 0.2rem; }
+  .contact-value { font-size: 1rem; color: var(--chrome); font-weight: 500; }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+  .form-group label { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--chrome-dim); }
+  .form-group input, .form-group select, .form-group textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--chrome); padding: 0.8rem 1rem; font-family: 'Barlow', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--rust); }
+  .form-group select option { background: var(--grease); }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-msg { padding: 0.8rem 1rem; margin-top: 0.5rem; font-weight: 600; font-size: 0.95rem; display: none; }
+  .form-msg.success { background: rgba(39,174,96,0.15); border: 1px solid #27ae60; color: #2ecc71; }
+  .form-msg.error { background: rgba(192,57,43,0.15); border: 1px solid var(--rust); color: var(--rust-light); }
+
+  .whatsapp-float { position: fixed; bottom: 2rem; right: 2rem; z-index: 200; background: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; text-decoration: none; box-shadow: 0 4px 20px rgba(37,211,102,0.4); animation: floatAnim 3s ease-in-out infinite; transition: transform 0.2s; }
+  .whatsapp-float:hover { transform: scale(1.1); }
+  @keyframes floatAnim { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+  footer { background: var(--oil); border-top: 2px solid var(--rust); padding: 3rem 2rem 2rem; }
+  .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; }
+  .footer-brand p { font-size: 0.9rem; color: var(--chrome-dim); line-height: 1.6; margin-top: 1rem; max-width: 280px; }
+  .footer-col h4 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; color: var(--rust-light); margin-bottom: 1rem; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.5rem; }
+  .footer-col ul li a { color: var(--chrome-dim); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--yellow); }
+  .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--chrome-dim); flex-wrap: wrap; gap: 1rem; }
+
+  /* Filtros */
+  .filtros { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .filtro-btn { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--chrome-dim); padding: 0.5rem 1.2rem; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+  .filtro-btn:hover, .filtro-btn.ativo { border-color: var(--rust); color: var(--rust-light); background: rgba(192,57,43,0.1); }
+  .pagination { display: flex; gap: 0.5rem; justify-content: center; margin-top: 2.5rem; }
+  .pag-btn { background: var(--grease); border: 1px solid rgba(255,255,255,0.1); color: var(--chrome-dim); padding: 0.5rem 1rem; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .pag-btn:hover, .pag-btn.ativo { background: var(--rust); border-color: var(--rust); color: white; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .mobile-menu-btn { display: block; }
+    h1 { font-size: 3rem; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .hero-stats { flex-wrap: wrap; gap: 1.5rem; }
+  }
+  @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<a href="https://wa.me/5511999999999?text=Olá!%20Vim%20pelo%20site%20e%20quero%20consultar%20uma%20peça." class="whatsapp-float" target="_blank">💬</a>
+
+<nav>
+  <a href="#" class="nav-logo">⚙ Auto<span>Peças</span> Sucata</a>
+  <ul class="nav-links">
+    <li><a href="#categorias">Categorias</a></li>
+    <li><a href="#pecas">Peças</a></li>
+    <li><a href="#vantagens">Vantagens</a></li>
+    <li><a href="#depoimentos">Depoimentos</a></li>
+    <li><a href="#contato" class="nav-cta">Consultar Peça</a></li>
+  </ul>
+  <button class="mobile-menu-btn">☰</button>
+</nav>
+
+<div class="ticker-wrap">
+  <div class="ticker-content">
+    <span>Motor Remanufaturado</span><span>Câmbio Original</span><span>Suspensão</span>
+    <span>Lataria</span><span>Freios</span><span>Elétrica</span><span>Ar Condicionado</span>
+    <span>Rodas e Pneus</span><span>Motor Remanufaturado</span><span>Câmbio Original</span>
+    <span>Suspensão</span><span>Lataria</span><span>Freios</span><span>Elétrica</span>
+    <span>Ar Condicionado</span><span>Rodas e Pneus</span>
+  </div>
+</div>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Loja Especializada em Peças Usadas</div>
+    <h1>
+      <span class="line-rust">Peças</span>
+      <span class="line-chrome">Originais</span>
+      <span class="line-yellow">de Sucata</span>
+    </h1>
+    <p class="hero-desc">Motor, câmbio, lataria, suspensão, elétrica e muito mais. Peças testadas, originais e com garantia — econômicas sem abrir mão da qualidade.</p>
+    <div class="hero-actions">
+      <a href="#contato" class="btn-primary">💬 Consultar Peça</a>
+      <a href="#pecas" class="btn-secondary">Ver Estoque →</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num" id="stat-pecas">—</div><div class="stat-label">Peças no Estoque</div></div>
+    <div class="divider"></div>
+    <div class="stat"><div class="stat-num">15 anos</div><div class="stat-label">No Mercado</div></div>
+    <div class="divider"></div>
+    <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Clientes Satisfeitos</div></div>
+  </div>
+</section>
+
+<div class="guarantee-strip">
+  <div class="guarantee-item"><span class="gicon">✅</span><span class="gtext">Peças Testadas</span></div>
+  <div class="guarantee-item"><span class="gicon">🔧</span><span class="gtext">Garantia em Todas as Peças</span></div>
+  <div class="guarantee-item"><span class="gicon">🚚</span><span class="gtext">Entregamos em Todo o Brasil</span></div>
+  <div class="guarantee-item"><span class="gicon">💬</span><span class="gtext">Atendimento via WhatsApp</span></div>
+  <div class="guarantee-item"><span class="gicon">💰</span><span class="gtext">Até 12x no Cartão</span></div>
+</div>
+
+<div class="search-section">
+  <div class="search-inner">
+    <h2>Encontre Sua Peça</h2>
+    <p>Digite o nome da peça, modelo do carro ou marca</p>
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Ex: Motor Gol G5, Câmbio Corolla, Parachoque...">
+      <button onclick="buscarPecas()">🔍 Buscar</button>
+    </div>
+  </div>
+</div>
+
+<div id="categorias" class="section-full">
+  <div class="section-inner">
+    <div class="section-label">Navegue por</div>
+    <h2>Categorias de Peças</h2>
+    <div class="categories-grid" id="categorias-grid">
+      <div class="loading-grid">Carregando categorias...</div>
+    </div>
+  </div>
+</div>
+
+<section id="pecas">
+  <div class="section-label">Mais Vendidas</div>
+  <h2>Peças em Destaque</h2>
+  <div class="filtros" id="filtros-condicao">
+    <button class="filtro-btn ativo" onclick="filtrarCondicao(null, this)">Todas</button>
+    <button class="filtro-btn" onclick="filtrarCondicao('Ótimo Estado', this)">Ótimo Estado</button>
+    <button class="filtro-btn" onclick="filtrarCondicao('Bom Estado', this)">Bom Estado</button>
+    <button class="filtro-btn" onclick="filtrarCondicao('Semi-Novo', this)">Semi-Novo</button>
+  </div>
+  <div class="parts-grid" id="pecas-grid">
+    <div class="loading-grid" style="grid-column:1/-1">Carregando peças...</div>
+  </div>
+  <div class="pagination" id="paginacao"></div>
+</section>
+
+<div id="vantagens" class="section-full">
+  <div class="section-inner">
+    <div class="section-label">Por que escolher</div>
+    <h2>A AutoPeças Sucata</h2>
+    <div class="benefits-grid">
+      <div class="benefit-card"><div class="benefit-icon">🔬</div><div class="benefit-title">Peças 100% Testadas</div><div class="benefit-desc">Todo item passa por inspeção antes de ser vendido. Garantimos que você receberá a peça funcionando.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">🏷️</div><div class="benefit-title">Preço Justo</div><div class="benefit-desc">Economia de 60% a 80% em relação à peça nova, sem abrir mão da originalidade e qualidade.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">📋</div><div class="benefit-title">Garantia Escrita</div><div class="benefit-desc">Todas as peças têm garantia de 3 a 6 meses por escrito. Se der problema, a gente resolve.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">🚚</div><div class="benefit-title">Entrega em Todo Brasil</div><div class="benefit-desc">Enviamos para qualquer estado via transportadora com embalagem reforçada.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">💳</div><div class="benefit-title">Facilidade no Pagamento</div><div class="benefit-desc">Parcelamos em até 12x no cartão, PIX com desconto e transferência bancária.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">🛠️</div><div class="benefit-title">Suporte Técnico</div><div class="benefit-desc">Nossa equipe ajuda a identificar a peça certa para o seu veículo antes de comprar.</div></div>
+    </div>
+  </div>
+</div>
+
+<section id="depoimentos">
+  <div class="section-label">O que dizem</div>
+  <h2>Nossos Clientes</h2>
+  <div class="testimonials-grid">
+    <div class="testimonial-card"><div class="stars">★★★★★</div><p class="testimonial-text">Comprei o motor do meu Gol aqui e chegou perfeito, testado e funcionando. Economizei quase R$ 2.000! Super recomendo.</p><div class="testimonial-author"><div class="author-avatar">MR</div><div><div class="author-name">Marcos R.</div><div class="author-city">São Paulo, SP</div></div></div></div>
+    <div class="testimonial-card"><div class="stars">★★★★★</div><p class="testimonial-text">Atendimento excelente pelo WhatsApp. Me ajudaram a identificar a peça certa antes de comprar. Chegou rápido e perfeita.</p><div class="testimonial-author"><div class="author-avatar">AP</div><div><div class="author-name">Ana Paula S.</div><div class="author-city">Campinas, SP</div></div></div></div>
+    <div class="testimonial-card"><div class="stars">★★★★★</div><p class="testimonial-text">Já comprei três vezes aqui. Câmbio, farol e suspensão — tudo em ótimo estado. Garantia real, sem enrolação. Virei cliente fixo!</p><div class="testimonial-author"><div class="author-avatar">JC</div><div><div class="author-name">João Carlos M.</div><div class="author-city">Ribeirão Preto, SP</div></div></div></div>
+  </div>
+</section>
+
+<div id="contato" class="section-full">
+  <div class="section-inner">
+    <div class="section-label">Fale Conosco</div>
+    <h2>Consulte uma Peça</h2>
+    <div class="contact-grid">
+      <div>
+        <p style="color:var(--chrome-dim);line-height:1.7;margin-bottom:2rem;">Não encontrou o que procura? Entre em contato! Temos mais de 5.000 itens e buscamos peças específicas para você.</p>
+        <div class="contact-info-item"><div class="contact-icon">📞</div><div><div class="contact-label">Telefone / WhatsApp</div><div class="contact-value">(11) 99999-9999</div></div></div>
+        <div class="contact-info-item"><div class="contact-icon">📍</div><div><div class="contact-label">Endereço</div><div class="contact-value">Rua das Sucatas, 1500 — Bairro Industrial<br>São Paulo, SP</div></div></div>
+        <div class="contact-info-item"><div class="contact-icon">🕐</div><div><div class="contact-label">Horário</div><div class="contact-value">Seg a Sex: 8h às 18h<br>Sábado: 8h às 13h</div></div></div>
+        <div class="contact-info-item"><div class="contact-icon">📧</div><div><div class="contact-label">E-mail</div><div class="contact-value">contato@autopecassucata.com.br</div></div></div>
+        <a href="https://wa.me/5511999999999" target="_blank" class="btn-primary" style="margin-top:1.5rem;display:inline-flex;">💬 Chamar no WhatsApp</a>
+      </div>
+      <form class="contact-form" id="form-consulta">
+        <div class="form-row">
+          <div class="form-group"><label>Seu Nome</label><input type="text" id="f-nome" placeholder="João Silva" required></div>
+          <div class="form-group"><label>WhatsApp</label><input type="tel" id="f-tel" placeholder="(11) 99999-9999" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Marca do Carro</label>
+            <select id="f-marca" required>
+              <option value="">Selecione...</option>
+              <option>Volkswagen</option><option>Chevrolet / GM</option><option>Fiat</option>
+              <option>Ford</option><option>Toyota</option><option>Honda</option>
+              <option>Hyundai</option><option>Renault</option><option>Nissan</option>
+              <option>Jeep</option><option>Outra</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Modelo e Ano</label><input type="text" id="f-modelo" placeholder="Ex: Onix 2018" required></div>
+        </div>
+        <div class="form-group"><label>Peça Desejada</label><input type="text" id="f-peca" placeholder="Ex: Motor 1.0, Câmbio automático..." required></div>
+        <div class="form-group"><label>Informações Adicionais</label><textarea id="f-info" placeholder="Código, observações, condição desejada..."></textarea></div>
+        <div class="form-msg" id="form-msg"></div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:1rem;">✉️ Enviar Consulta</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">⚙ Auto<span>Peças</span> Sucata</a>
+      <p>Especialistas em peças usadas originais com qualidade e garantia. Atendendo todo o Brasil há mais de 15 anos.</p>
+    </div>
+    <div class="footer-col"><h4>Categorias</h4><ul><li><a href="#">Motor</a></li><li><a href="#">Câmbio</a></li><li><a href="#">Lataria</a></li><li><a href="#">Suspensão</a></li><li><a href="#">Elétrica</a></li></ul></div>
+    <div class="footer-col"><h4>Empresa</h4><ul><li><a href="#">Sobre Nós</a></li><li><a href="#">Política de Garantia</a></li><li><a href="#">Formas de Pagamento</a></li><li><a href="#">Entrega</a></li></ul></div>
+    <div class="footer-col"><h4>Redes Sociais</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">Facebook</a></li><li><a href="#">YouTube</a></li><li><a href="#">WhatsApp</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 AutoPeças Sucata. Todos os direitos reservados.</span>
+    <span>CNPJ: 00.000.000/0001-00</span>
+  </div>
+</footer>
+
+<script>
+  const API = window.location.origin + '/api';
+  let paginaAtual = 1;
+  let filtroCondicao = null;
+  let filtroCategoria = null;
+  const ICONES_CAT = {'Motor':'⚙️','Câmbio':'🔄','Lataria':'🚗','Elétrica':'⚡','Ar-Condicionado':'❄️','Rodas':'🛞','Suspensão':'🔩','Freios':'🛑','Faróis':'💡','Vidros':'🪟','Interior':'🪑','Bateria':'🔋'};
+
+  // ── Carregar categorias ───────────────────────────
+  async function carregarCategorias() {
+    try {
+      const res = await fetch(`${API}/categorias`);
+      const cats = await res.json();
+      const grid = document.getElementById('categorias-grid');
+      grid.innerHTML = cats.map(c => `
+        <div class="cat-card" onclick="filtrarCategoria(${c.id}, this)">
+          <span class="cat-icon">${c.icone || ICONES_CAT[c.nome] || '🔧'}</span>
+          <div class="cat-name">${c.nome}</div>
+          <div class="cat-count">${c.total_pecas} itens</div>
+        </div>
+      `).join('');
+    } catch {
+      document.getElementById('categorias-grid').innerHTML = '<p style="color:var(--chrome-dim);padding:2rem">Erro ao carregar categorias.</p>';
+    }
+  }
+
+  // ── Carregar peças ────────────────────────────────
+  async function carregarPecas() {
+    const grid = document.getElementById('pecas-grid');
+    grid.innerHTML = '<div class="loading-grid" style="grid-column:1/-1">⚙️ Carregando peças...</div>';
+
+    const q = document.getElementById('search-input').value.trim();
+    const params = new URLSearchParams({ page: paginaAtual, limit: 6 });
+    if (q) params.set('q', q);
+    if (filtroCondicao) params.set('condicao', filtroCondicao);
+    if (filtroCategoria) params.set('categoria_id', filtroCategoria);
+
+    try {
+      const res = await fetch(`${API}/pecas?${params}`);
+      const data = await res.json();
+
+      if (!data.pecas?.length) {
+        grid.innerHTML = '<div class="loading-grid" style="grid-column:1/-1">Nenhuma peça encontrada para este filtro.</div>';
+        document.getElementById('paginacao').innerHTML = '';
+        return;
+      }
+
+      grid.innerHTML = data.pecas.map(p => `
+        <div class="part-card">
+          <div class="part-img">
+            ${p.imagem_url ? `<img src="${p.imagem_url}" alt="${p.nome}">` : (ICONES_CAT[p.categoria_nome] || '🔧')}
+            <span class="part-condition">${p.condicao}</span>
+          </div>
+          <div class="part-body">
+            <div class="part-name">${p.nome}</div>
+            <div class="part-car">${p.marca_carro || ''} ${p.modelo_carro || ''} ${p.ano_inicio ? '— ' + p.ano_inicio + (p.ano_fim ? ' a ' + p.ano_fim : '') : ''}</div>
+            <div class="part-price">R$ ${Number(p.preco).toLocaleString('pt-BR',{minimumFractionDigits:2})} <small>/ à vista</small></div>
+            <div class="part-footer">
+              <a href="https://wa.me/5511999999999?text=${encodeURIComponent('Olá! Tenho interesse na peça: '+p.nome+' ('+p.marca_carro+' '+p.modelo_carro+')')}" class="part-whatsapp" target="_blank">💬 WhatsApp</a>
+              <a href="#contato" class="part-btn" onclick="preencherPeca('${p.nome}', '${p.marca_carro||''}', '${p.modelo_carro||''}')">Consultar</a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Paginação
+      const pag = document.getElementById('paginacao');
+      if (data.total_paginas > 1) {
+        let html = '';
+        if (paginaAtual > 1) html += `<button class="pag-btn" onclick="irPagina(${paginaAtual-1})">← Anterior</button>`;
+        for (let i = 1; i <= data.total_paginas; i++) {
+          html += `<button class="pag-btn ${i===paginaAtual?'ativo':''}" onclick="irPagina(${i})">${i}</button>`;
+        }
+        if (paginaAtual < data.total_paginas) html += `<button class="pag-btn" onclick="irPagina(${paginaAtual+1})">Próxima →</button>`;
+        pag.innerHTML = html;
+      } else { pag.innerHTML = ''; }
+
+      // Atualizar stat
+      document.getElementById('stat-pecas').textContent = data.total + '+';
+    } catch {
+      grid.innerHTML = '<div class="loading-grid" style="grid-column:1/-1">Erro ao carregar peças. Verifique se o servidor está rodando.</div>';
+    }
+  }
+
+  function irPagina(n) { paginaAtual = n; carregarPecas(); document.getElementById('pecas').scrollIntoView({behavior:'smooth'}); }
+
+  function buscarPecas() { paginaAtual = 1; filtroCategoria = null; carregarPecas(); document.getElementById('pecas').scrollIntoView({behavior:'smooth'}); }
+
+  function filtrarCondicao(condicao, btn) {
+    filtroCondicao = condicao;
+    paginaAtual = 1;
+    document.querySelectorAll('#filtros-condicao .filtro-btn').forEach(b => b.classList.remove('ativo'));
+    btn.classList.add('ativo');
+    carregarPecas();
+  }
+
+  function filtrarCategoria(id, card) {
+    filtroCategoria = filtroCategoria === id ? null : id;
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('ativo'));
+    if (filtroCategoria) card.classList.add('ativo');
+    paginaAtual = 1;
+    carregarPecas();
+    document.getElementById('pecas').scrollIntoView({behavior:'smooth'});
+  }
+
+  function preencherPeca(peca, marca, modelo) {
+    document.getElementById('f-peca').value = peca;
+    if (marca) { const sel = document.getElementById('f-marca'); [...sel.options].forEach(o => { if (o.value.toLowerCase().includes(marca.toLowerCase())) o.selected = true; }); }
+    if (modelo) document.getElementById('f-modelo').value = modelo;
+  }
+
+  // ── Busca com Enter ───────────────────────────────
+  document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') buscarPecas(); });
+
+  // ── Formulário de consulta ────────────────────────
+  document.getElementById('form-consulta').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    const msg = document.getElementById('form-msg');
+    btn.textContent = 'Enviando...'; btn.disabled = true;
+
+    const body = {
+      nome: document.getElementById('f-nome').value,
+      whatsapp: document.getElementById('f-tel').value,
+      marca_carro: document.getElementById('f-marca').value,
+      modelo_ano: document.getElementById('f-modelo').value,
+      peca_desejada: document.getElementById('f-peca').value,
+      informacoes: document.getElementById('f-info').value,
+    };
+
+    try {
+      const res = await fetch(`${API}/consultas`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      const data = await res.json();
+      if (res.ok) {
+        msg.className = 'form-msg success'; msg.style.display = 'block';
+        msg.textContent = '✅ ' + data.mensagem;
+        e.target.reset();
+        // Abre WhatsApp com mensagem pré-preenchida
+        setTimeout(() => { if (data.whatsapp_link) window.open(data.whatsapp_link, '_blank'); }, 500);
+      } else {
+        msg.className = 'form-msg error'; msg.style.display = 'block';
+        msg.textContent = '❌ ' + (data.erro || 'Erro ao enviar.');
+      }
+    } catch {
+      msg.className = 'form-msg error'; msg.style.display = 'block';
+      msg.textContent = '❌ Servidor offline. Tente pelo WhatsApp.';
+    }
+    btn.textContent = '✉️ Enviar Consulta'; btn.disabled = false;
+  });
+
+  // ── Scroll animation ──────────────────────────────
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.benefit-card, .testimonial-card').forEach(el => {
+    el.style.opacity='0'; el.style.transform='translateY(30px)'; el.style.transition='opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+
+  // ── Smooth scroll ─────────────────────────────────
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // ── Init ──────────────────────────────────────────
+  carregarCategorias();
+  carregarPecas();
+</script>
+
+<!-- ===== CHATBOT ===== -->
+<style>
+  .chat-bubble {
+    position: fixed; bottom: 2rem; left: 2rem; z-index: 300;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--rust); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(192,57,43,0.5);
+    border: none; transition: transform 0.2s, background 0.2s;
+    animation: floatAnim 3s ease-in-out infinite;
+  }
+  .chat-bubble:hover { background: var(--rust-light); transform: scale(1.1); }
+  .chat-bubble .chat-badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--yellow); color: var(--oil);
+    font-size: 0.6rem; font-weight: 900;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .chat-window {
+    position: fixed; bottom: 6rem; left: 2rem; z-index: 300;
+    width: 360px; max-height: 520px;
+    background: var(--grease); border: 1px solid rgba(192,57,43,0.3);
+    border-radius: 4px; display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    transform: scale(0.8) translateY(20px);
+    opacity: 0; pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    transform-origin: bottom left;
+  }
+  .chat-window.open {
+    transform: scale(1) translateY(0);
+    opacity: 1; pointer-events: all;
+  }
+
+  .chat-header {
+    background: var(--rust); padding: 1rem 1.2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+    border-radius: 4px 4px 0 0;
+  }
+  .chat-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  }
+  .chat-header-info { flex: 1; }
+  .chat-header-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 1px; text-transform: uppercase; }
+  .chat-header-status { font-size: 0.75rem; opacity: 0.8; display: flex; align-items: center; gap: 0.3rem; }
+  .chat-header-status::before { content: ''; width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; display: inline-block; }
+  .chat-close { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; }
+  .chat-close:hover { opacity: 1; }
+
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 1rem;
+    display: flex; flex-direction: column; gap: 0.8rem;
+    max-height: 340px;
+    scrollbar-width: thin; scrollbar-color: var(--rust) transparent;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-track { background: transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--rust); border-radius: 2px; }
+
+  .msg { display: flex; gap: 0.5rem; align-items: flex-end; }
+  .msg.user { flex-direction: row-reverse; }
+  .msg-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--rust); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+  .msg.user .msg-avatar { background: var(--steel-light, #0F3460); }
+  .msg-bubble {
+    max-width: 75%; padding: 0.7rem 1rem;
+    font-size: 0.88rem; line-height: 1.5; color: var(--chrome);
+    background: rgba(255,255,255,0.06); border-radius: 12px 12px 12px 2px;
+  }
+  .msg.user .msg-bubble { background: var(--rust); border-radius: 12px 12px 2px 12px; }
+  .msg-time { font-size: 0.65rem; color: var(--chrome-dim); margin-top: 0.2rem; text-align: right; }
+
+  .chat-typing { display: flex; align-items: center; gap: 4px; padding: 0.5rem 0; }
+  .chat-typing span { width: 6px; height: 6px; background: var(--chrome-dim); border-radius: 50%; animation: typing 1.2s infinite; }
+  .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-6px);opacity:1} }
+
+  .chat-suggestions { padding: 0.5rem 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .suggestion-btn {
+    background: rgba(192,57,43,0.15); border: 1px solid rgba(192,57,43,0.3);
+    color: var(--rust-light); font-size: 0.75rem; padding: 0.3rem 0.7rem;
+    border-radius: 20px; cursor: pointer; transition: all 0.2s;
+    font-family: 'Barlow', sans-serif;
+  }
+  .suggestion-btn:hover { background: rgba(192,57,43,0.3); }
+
+  .chat-input-area {
+    padding: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; gap: 0.5rem;
+  }
+  .chat-input {
+    flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    color: var(--chrome); padding: 0.6rem 0.9rem; font-family: 'Barlow', sans-serif;
+    font-size: 0.9rem; outline: none; border-radius: 2px; transition: border-color 0.2s;
+  }
+  .chat-input:focus { border-color: var(--rust); }
+  .chat-input::placeholder { color: var(--chrome-dim); }
+  .chat-send {
+    background: var(--rust); color: white; border: none;
+    width: 38px; height: 38px; border-radius: 2px;
+    cursor: pointer; font-size: 1rem; transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .chat-send:hover { background: var(--rust-light); }
+  .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  @media (max-width: 480px) {
+    .chat-window { width: calc(100vw - 2rem); left: 1rem; bottom: 5rem; }
+    .chat-bubble { left: 1rem; bottom: 1rem; }
+  }
+</style>
+
+<!-- Botão do chat -->
+<button class="chat-bubble" onclick="toggleChat()" title="Falar com IA">
+  🤖
+  <span class="chat-badge">IA</span>
+</button>
+
+<!-- Janela do chat -->
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-avatar">🔧</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name">Assistente AutoPeças</div>
+      <div class="chat-header-status">Online agora</div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <div class="chat-suggestions" id="chatSuggestions">
+    <button class="suggestion-btn" onclick="enviarSugestao('Quais peças vocês têm disponíveis?')">Ver peças</button>
+    <button class="suggestion-btn" onclick="enviarSugestao('Como funciona a garantia?')">Garantia</button>
+    <button class="suggestion-btn" onclick="enviarSugestao('Vocês entregam em todo Brasil?')">Entrega</button>
+    <button class="suggestion-btn" onclick="enviarSugestao('Como faço para comprar?')">Como comprar</button>
+  </div>
+
+  <div class="chat-input-area">
+    <input class="chat-input" id="chatInput" type="text" placeholder="Digite sua dúvida sobre peças..." maxlength="300">
+    <button class="chat-send" id="chatSend" onclick="enviarMensagem()">➤</button>
+  </div>
+</div>
+
+<script>
+  // ── Estado do chat ────────────────────────────────
+  const chatState = {
+    aberto: false,
+    historico: [],
+    digitando: false,
+  };
+
+  // ── Toggle chat ───────────────────────────────────
+  function toggleChat() {
+    chatState.aberto = !chatState.aberto;
+    document.getElementById('chatWindow').classList.toggle('open', chatState.aberto);
+    if (chatState.aberto && chatState.historico.length === 0) {
+      setTimeout(() => adicionarMensagemBot('Olá! 👋 Sou o assistente da **AutoPeças Sucata**. Posso te ajudar a encontrar peças, tirar dúvidas sobre garantia, entrega e pagamento. Como posso te ajudar?'), 400);
+    }
+    if (chatState.aberto) {
+      setTimeout(() => document.getElementById('chatInput').focus(), 300);
+    }
+  }
+
+  // ── Adicionar mensagem do bot ─────────────────────
+  function adicionarMensagemBot(texto) {
+    const msgs = document.getElementById('chatMessages');
+    const hora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.innerHTML = `
+      <div class="msg-avatar">🔧</div>
+      <div>
+        <div class="msg-bubble">${texto.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>
+        <div class="msg-time">${hora}</div>
+      </div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  // ── Adicionar mensagem do usuário ─────────────────
+  function adicionarMensagemUsuario(texto) {
+    const msgs = document.getElementById('chatMessages');
+    const hora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+    const div = document.createElement('div');
+    div.className = 'msg user';
+    div.innerHTML = `
+      <div class="msg-avatar">👤</div>
+      <div>
+        <div class="msg-bubble">${texto}</div>
+        <div class="msg-time">${hora}</div>
+      </div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  // ── Mostrar digitando ─────────────────────────────
+  function mostrarDigitando() {
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'msg bot'; div.id = 'typing-indicator';
+    div.innerHTML = `<div class="msg-avatar">🔧</div><div class="msg-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function esconderDigitando() {
+    document.getElementById('typing-indicator')?.remove();
+  }
+
+  // ── Enviar mensagem ───────────────────────────────
+  async function enviarMensagem() {
+    const input = document.getElementById('chatInput');
+    const texto = input.value.trim();
+    if (!texto || chatState.digitando) return;
+
+    input.value = '';
+    document.getElementById('chatSuggestions').style.display = 'none';
+    adicionarMensagemUsuario(texto);
+
+    chatState.historico.push({ role: 'user', content: texto });
+    chatState.digitando = true;
+    document.getElementById('chatSend').disabled = true;
+
+    mostrarDigitando();
+
+    try {
+      const response = await fetch(`${API}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mensagens: chatState.historico.slice(-10) })
+      });
+
+      const data = await response.json();
+      const resposta = data.resposta || 'Desculpe, não consegui responder. Fale pelo WhatsApp: (11) 99999-9999 ☺';
+
+
+      esconderDigitando();
+      adicionarMensagemBot(resposta);
+      chatState.historico.push({ role: 'assistant', content: resposta });
+
+    } catch {
+      esconderDigitando();
+      adicionarMensagemBot('Ops! Tive um probleminha técnico. Fale com a gente direto pelo WhatsApp: **(11) 99999-9999** 😊');
+    }
+
+    chatState.digitando = false;
+    document.getElementById('chatSend').disabled = false;
+    input.focus();
+  }
+
+  function enviarSugestao(texto) {
+    document.getElementById('chatInput').value = texto;
+    enviarMensagem();
+  }
+
+  // Enter para enviar
+  document.getElementById('chatInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') enviarMensagem();
+  });
+</script>
+</body>
+</html>
